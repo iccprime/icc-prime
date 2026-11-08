@@ -2,127 +2,338 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ICC Prime Live Stream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ICC Prime Live</title>
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
+    :root {
+      --plyr-color-main: #00a8ff;
+      --bg-dark: #07090e;
+      --card-bg: #111622;
+      --accent: #0088cc;
+    }
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background-color: #0d1117;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at top, #141d2f 0%, var(--bg-dark) 70%);
       color: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
+      padding-bottom: 40px;
     }
-    .header {
+
+    /* Top Header */
+    .navbar {
       width: 100%;
-      background: #161b22;
-      padding: 12px 0;
-      text-align: center;
+      background: rgba(17, 22, 34, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand {
+      font-size: 20px;
       font-weight: 700;
-      font-size: 18px;
-      border-bottom: 1px solid #30363d;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #ffffff, #6bc5ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .player-container {
-      width: 100%;
-      max-width: 900px;
-      margin-top: 15px;
+    .live-badge {
+      background: rgba(255, 42, 42, 0.15);
+      border: 1px solid #ff2a2a;
+      color: #ff4d4d;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #ff2a2a;
+      border-radius: 50%;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    /* Main Container */
+    .container {
+      width: 94%;
+      max-width: 850px;
+      margin-top: 18px;
+    }
+
+    /* Video Card */
+    .player-wrapper {
       background: #000;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 168, 255, 0.25);
+      box-shadow: 0 10px 35px rgba(0, 136, 204, 0.18);
     }
     video {
       width: 100%;
       aspect-ratio: 16 / 9;
+      display: block;
     }
-    .tg-btn {
-      margin-top: 20px;
-      background: #0088cc;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 12px 24px;
+
+    /* Feed Switcher Bar */
+    .controls-card {
+      background: var(--card-bg);
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .section-title {
+      font-size: 13px;
+      color: #8b9bb4;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .lang-btn {
+      background: #1a2234;
+      color: #c9d4e5;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 0;
       border-radius: 8px;
+      font-size: 14px;
       font-weight: 600;
-      font-size: 15px;
-      transition: opacity 0.2s;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      text-decoration: none;
     }
-    .tg-btn:hover {
+    .lang-btn.active {
+      background: linear-gradient(135deg, #0088cc, #005f99);
+      color: #fff;
+      border-color: #38b6ff;
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.35);
+    }
+
+    /* Telegram Banner */
+    .tg-card {
+      margin-top: 16px;
+      background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(0, 136, 204, 0.3);
+    }
+    .tg-info h3 {
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+    .tg-info p {
+      font-size: 12px;
       opacity: 0.9;
     }
-    .status-msg {
-      margin-top: 12px;
-      color: #8b949e;
+    .tg-join-pill {
+      background: #fff;
+      color: #0088cc;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* POPUP MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .modal-box {
+      background: #131926;
+      border: 1px solid rgba(0, 168, 255, 0.3);
+      border-radius: 18px;
+      padding: 26px 22px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      animation: popIn 0.25s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+    .modal-box h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .modal-box p {
       font-size: 14px;
+      color: #9ab0cc;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .modal-btn-join {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #0099e6, #006699);
+      color: #fff;
+      text-decoration: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 15px rgba(0, 153, 230, 0.4);
+    }
+    .modal-btn-close {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #8b9bb4;
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">🏏 ICC Prime Live</div>
-
-  <div class="player-container">
-    <video id="player" playsinline controls autoplay></video>
+  <!-- TELEGRAM POPUP MODAL -->
+  <div class="modal-overlay" id="tgModal">
+    <div class="modal-box">
+      <div class="modal-icon">📢</div>
+      <h2>Join ICC Prime Official</h2>
+      <p>Join our Telegram channel for backup stream links, live toss updates, and HD cricket feeds!</p>
+      <a href="https://t.me/iccprime" target="_blank" class="modal-btn-join" onclick="closeModal()">
+        Join @iccprime Now
+      </a>
+      <button class="modal-btn-close" onclick="closeModal()">
+        Already Joined • Watch Stream
+      </button>
+    </div>
   </div>
 
-  <div id="status" class="status-msg"></div>
+  <!-- TOP NAVBAR -->
+  <div class="navbar">
+    <div class="brand">🏏 ICC PRIME</div>
+    <div class="live-badge"><span class="dot"></span> LIVE HD</div>
+  </div>
 
-  <a class="tg-btn" href="https://t.me/iccprime" target="_blank">
-    📢 Join Telegram @iccprime
-  </a>
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="player-wrapper">
+      <video id="player" playsinline controls autoplay></video>
+    </div>
+
+    <!-- LANGUAGE SWITCHER -->
+    <div class="controls-card">
+      <div class="section-title">Select Audio Feed</div>
+      <div class="lang-grid">
+        <a href="?id=hindi" class="lang-btn" id="btn-hindi">Hindi</a>
+        <a href="?id=english" class="lang-btn" id="btn-english">English</a>
+        <a href="?id=telugu" class="lang-btn" id="btn-telugu">Telugu</a>
+        <a href="?id=tamil" class="lang-btn" id="btn-tamil">Tamil</a>
+      </div>
+    </div>
+
+    <!-- TELEGRAM FOOTER CARD -->
+    <a href="https://t.me/iccprime" target="_blank" class="tg-card">
+      <div class="tg-info">
+        <h3>Telegram • @iccprime</h3>
+        <p>Tap to join for instant match links</p>
+      </div>
+      <div class="tg-join-pill">Join +</div>
+    </a>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
-    // 1. Add your stream IDs and .m3u8 URLs here
+    // Close Popup Function
+    function closeModal() {
+      document.getElementById("tgModal").style.display = "none";
+    }
+
+    // PASTE YOUR REAL .m3u8 LINKS BELOW
     const streams = {
       "hindi": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
       "english": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "tamil": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "telugu": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "telugu": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "tamil": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
     };
 
-    // 2. Read the ?id= parameter from the link
     const params = new URLSearchParams(window.location.search);
-    const streamId = params.get("id") || "english";
-    const streamUrl = streams[streamId];
+    const streamId = (params.get("id") || "hindi").toLowerCase();
+    const streamUrl = streams[streamId] || streams["hindi"];
     const video = document.getElementById("player");
-    const statusText = document.getElementById("status");
 
-    if (!streamUrl) {
-      statusText.innerText = "Stream ID not found. Please check your link.";
-    } else {
-      statusText.innerText = "Playing feed: " + streamId.toUpperCase();
+    // Highlight active language button
+    const activeBtn = document.getElementById("btn-" + streamId);
+    if (activeBtn) activeBtn.classList.add("active");
 
-      // Works on Android/PC (via HLS.js) with quality selector
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          const availableQualities = hls.levels.map((l) => l.height);
-          new Plyr(video, {
-            quality: {
-              default: availableQualities[0],
-              options: availableQualities,
-              forced: true,
-              onChange: (newQuality) => {
-                hls.levels.forEach((level, levelIndex) => {
-                  if (level.height === newQuality) {
-                    hls.currentLevel = levelIndex;
-                  }
-                });
-              }
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        const availableQualities = hls.levels.map((l) => l.height);
+        new Plyr(video, {
+          quality: {
+            default: availableQualities[0],
+            options: availableQualities,
+            forced: true,
+            onChange: (newQuality) => {
+              hls.levels.forEach((level, levelIndex) => {
+                if (level.height === newQuality) hls.currentLevel = levelIndex;
+              });
             }
-          });
+          }
         });
-      }
-      // Works automatically on iPhone / iPad (Safari native HLS)
-      else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = streamUrl;
-        new Plyr(video);
-      }
+      });
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = streamUrl;
+      new Plyr(video);
     }
   </script>
 </body>
-</html>
+                                  </html>
+  
