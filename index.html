@@ -3,337 +3,473 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ICC Prime Live</title>
+  <title>ICC Prime • Live Streaming</title>
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --plyr-color-main: #00a8ff;
-      --bg-dark: #07090e;
-      --card-bg: #111622;
-      --accent: #0088cc;
+      --neon-cyan: #00d2ff;
+      --neon-blue: #0072ff;
+      --bg-deep: #040814;
+      --card-dark: #0a1124;
+      --plyr-color-main: #00d2ff;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Montserrat', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
+
     body {
-      background: radial-gradient(circle at top, #141d2f 0%, var(--bg-dark) 70%);
+      background: radial-gradient(circle at 50% 0%, #0d2147 0%, #050b1a 45%, #03060f 100%);
       color: #ffffff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-bottom: 40px;
+      padding: 0 18px 36px;
+    }
+
+    .app-wrapper {
+      width: 100%;
+      max-width: 520px;
     }
 
     /* Top Header */
-    .navbar {
-      width: 100%;
-      background: rgba(17, 22, 34, 0.85);
-      backdrop-filter: blur(10px);
-      padding: 14px 20px;
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      padding: 22px 0 16px;
+      border-bottom: 1px solid rgba(0, 210, 255, 0.14);
     }
-    .brand {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      background: linear-gradient(90deg, #ffffff, #6bc5ff);
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      background: linear-gradient(90deg, #00d2ff, #3a86ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(0, 210, 255, 0.45));
     }
-    .live-badge {
-      background: rgba(255, 42, 42, 0.15);
-      border: 1px solid #ff2a2a;
-      color: #ff4d4d;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
+
+    .live-pill {
+      background: linear-gradient(135deg, #b31217, #e52d27);
+      border: 1px solid #ff5e62;
+      box-shadow: 0 0 16px rgba(229, 45, 39, 0.65);
+      padding: 6px 14px;
+      border-radius: 999px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
     }
-    .dot {
+
+    .live-dot {
       width: 8px;
       height: 8px;
-      background: #ff2a2a;
+      background: #ffffff;
       border-radius: 50%;
-      animation: pulse 1.2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 0.7; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(0.95); opacity: 0.7; }
+      box-shadow: 0 0 8px #fff;
+      animation: blink 1.1s infinite ease-in-out;
     }
 
-    /* Main Container */
-    .container {
-      width: 94%;
-      max-width: 850px;
-      margin-top: 18px;
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Video Card */
-    .player-wrapper {
-      background: #000;
-      border-radius: 14px;
+    /* Hero Titles */
+    .hero-text {
+      margin: 22px 0 16px;
+    }
+
+    .hero-text h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      color: #8da2c0;
+      font-weight: 500;
+    }
+
+    /* Neon Video Frame */
+    .player-card {
+      position: relative;
+      border-radius: 18px;
       overflow: hidden;
-      border: 1px solid rgba(0, 168, 255, 0.25);
-      box-shadow: 0 10px 35px rgba(0, 136, 204, 0.18);
+      background: #000;
+      border: 1.5px solid rgba(0, 210, 255, 0.55);
+      box-shadow:
+        0 0 28px rgba(0, 210, 255, 0.25),
+        0 12px 35px rgba(0, 0, 0, 0.8);
     }
+
     video {
       width: 100%;
       aspect-ratio: 16 / 9;
       display: block;
+      background: #000;
     }
 
-    /* Feed Switcher Bar */
-    .controls-card {
-      background: var(--card-bg);
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
+    /* Channel Selector Section */
+    .section-heading {
+      margin: 24px 0 14px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #f0f6ff;
     }
-    .section-title {
-      font-size: 13px;
-      color: #8b9bb4;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-    .lang-grid {
+
+    .channel-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .lang-btn {
-      background: #1a2234;
-      color: #c9d4e5;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 0;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      text-decoration: none;
-    }
-    .lang-btn.active {
-      background: linear-gradient(135deg, #0088cc, #005f99);
-      color: #fff;
-      border-color: #38b6ff;
-      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.35);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
 
-    /* Telegram Banner */
-    .tg-card {
-      margin-top: 16px;
-      background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+    .channel-card {
+      position: relative;
+      background: linear-gradient(180deg, #0d172e 0%, #070d1c 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
       border-radius: 14px;
-      padding: 16px 20px;
+      height: 82px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .channel-card:hover {
+      border-color: rgba(0, 210, 255, 0.45);
+    }
+
+    .channel-card.active {
+      background: radial-gradient(circle at center, rgba(0, 150, 255, 0.22) 0%, #081226 100%);
+      border: 1.8px solid var(--neon-cyan);
+      box-shadow:
+        0 0 18px rgba(0, 210, 255, 0.4),
+        inset 0 0 12px rgba(0, 210, 255, 0.18);
+    }
+
+    /* Blue Checkmark Badge */
+    .check-badge {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d2ff, #0072ff);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.8);
+    }
+
+    .channel-card.active .check-badge {
+      display: flex;
+    }
+
+    /* Channel Typography Logos */
+    .ch-star {
+      font-style: italic;
+      font-weight: 800;
+      font-size: 15px;
+      line-height: 1.1;
+      letter-spacing: 0.3px;
+    }
+    .ch-sky {
+      font-weight: 800;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+    .ch-sky small {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+    .ch-fox {
+      font-weight: 800;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+    .ch-fox small {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-top: 3px;
+      color: #9ec5ff;
+    }
+
+    /* Glowing Telegram Button */
+    .tg-btn {
+      margin-top: 22px;
+      width: 100%;
+      background: linear-gradient(90deg, #0052d4 0%, #0099ff 50%, #00d2ff 100%);
+      border: 1px solid rgba(130, 230, 255, 0.65);
+      box-shadow:
+        0 0 25px rgba(0, 162, 255, 0.55),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 15px 20px;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      text-decoration: none;
-      color: #fff;
-      box-shadow: 0 6px 20px rgba(0, 136, 204, 0.3);
-    }
-    .tg-info h3 {
-      font-size: 16px;
-      margin-bottom: 3px;
-    }
-    .tg-info p {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-    .tg-join-pill {
-      background: #fff;
-      color: #0088cc;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 13px;
-      white-space: nowrap;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* POPUP MODAL */
-    .modal-overlay {
+    .tg-btn:active {
+      transform: scale(0.98);
+    }
+
+    .tg-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+      filter: drop-shadow(0 0 6px rgba(255,255,255,0.6));
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #7c90b0;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* Neon Popup Modal */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(2, 6, 16, 0.82);
+      backdrop-filter: blur(10px);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 999;
       padding: 20px;
     }
-    .modal-box {
-      background: #131926;
-      border: 1px solid rgba(0, 168, 255, 0.3);
-      border-radius: 18px;
-      padding: 26px 22px;
+
+    .modal-card {
+      background: linear-gradient(180deg, #0e1b38 0%, #070e1f 100%);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 35px rgba(0, 210, 255, 0.35);
+      border-radius: 20px;
+      padding: 28px 22px;
       width: 100%;
       max-width: 360px;
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-      animation: popIn 0.25s ease-out;
     }
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .modal-icon {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
-    .modal-box h2 {
-      font-size: 20px;
+
+    .modal-card h2 {
+      font-size: 22px;
+      font-weight: 800;
       margin-bottom: 8px;
     }
-    .modal-box p {
-      font-size: 14px;
-      color: #9ab0cc;
-      margin-bottom: 20px;
-      line-height: 1.4;
+
+    .modal-card h2 span {
+      color: var(--neon-cyan);
     }
-    .modal-btn-join {
-      display: block;
+
+    .modal-card p {
+      font-size: 13.5px;
+      color: #9cb1d0;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .modal-join {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       width: 100%;
-      background: linear-gradient(135deg, #0099e6, #006699);
+      background: linear-gradient(90deg, #0066ff, #00d2ff);
       color: #fff;
       text-decoration: none;
       padding: 13px;
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: 700;
       font-size: 15px;
+      box-shadow: 0 0 18px rgba(0, 210, 255, 0.5);
       margin-bottom: 10px;
-      box-shadow: 0 4px 15px rgba(0, 153, 230, 0.4);
     }
-    .modal-btn-close {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #8b9bb4;
+
+    .modal-dismiss {
       width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #8da2c0;
       padding: 11px;
-      border-radius: 10px;
-      font-weight: 600;
+      border-radius: 12px;
       font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- TELEGRAM POPUP MODAL -->
-  <div class="modal-overlay" id="tgModal">
-    <div class="modal-box">
-      <div class="modal-icon">📢</div>
-      <h2>Join ICC Prime Official</h2>
-      <p>Join our Telegram channel for backup stream links, live toss updates, and HD cricket feeds!</p>
-      <a href="https://t.me/iccprime" target="_blank" class="modal-btn-join" onclick="closeModal()">
-        Join @iccprime Now
+  <!-- TELEGRAM POPUP -->
+  <div class="modal-backdrop" id="tgModal">
+    <div class="modal-card">
+      <h2>ICC <span>Prime</span> Official</h2>
+      <p>Join our official Telegram channel for instant HD cricket links, toss updates & backup streams.</p>
+      <a href="https://t.me/iccprime" target="_blank" class="modal-join" onclick="closePopup()">
+        🚀 Join @iccprime Now
       </a>
-      <button class="modal-btn-close" onclick="closeModal()">
-        Already Joined • Watch Stream
-      </button>
+      <button class="modal-dismiss" onclick="closePopup()">Already Joined • Continue</button>
     </div>
   </div>
 
-  <!-- TOP NAVBAR -->
-  <div class="navbar">
-    <div class="brand">🏏 ICC PRIME</div>
-    <div class="live-badge"><span class="dot"></span> LIVE HD</div>
-  </div>
+  <div class="app-wrapper">
+    <!-- TOP BAR -->
+    <header class="header">
+      <div class="logo">ICC <span>Prime</span></div>
+      <div class="live-pill">
+        <span class="live-dot"></span> LIVE
+      </div>
+    </header>
 
-  <!-- MAIN CONTENT -->
-  <div class="container">
-    <div class="player-wrapper">
+    <!-- HEADING -->
+    <div class="hero-text">
+      <h1>Live Streaming</h1>
+      <p>Watch Live Cricket in HD</p>
+    </div>
+
+    <!-- VIDEO PLAYER -->
+    <div class="player-card">
       <video id="player" playsinline controls autoplay></video>
     </div>
 
-    <!-- LANGUAGE SWITCHER -->
-    <div class="controls-card">
-      <div class="section-title">Select Audio Feed</div>
-      <div class="lang-grid">
-        <a href="?id=hindi" class="lang-btn" id="btn-hindi">Hindi</a>
-        <a href="?id=english" class="lang-btn" id="btn-english">English</a>
-        <a href="?id=telugu" class="lang-btn" id="btn-telugu">Telugu</a>
-        <a href="?id=tamil" class="lang-btn" id="btn-tamil">Tamil</a>
+    <!-- CHANNEL SELECTOR -->
+    <div class="section-heading">Select Your Channel</div>
+    <div class="channel-grid">
+      <!-- Star Sports -->
+      <div class="channel-card" id="card-star" onclick="switchChannel('star')">
+        <div class="check-badge">✓</div>
+        <div class="ch-star">STAR<br>SPORTS</div>
+      </div>
+
+      <!-- Sky Sports -->
+      <div class="channel-card" id="card-sky" onclick="switchChannel('sky')">
+        <div class="check-badge">✓</div>
+        <div class="ch-sky">sky<small>SPORTS</small></div>
+      </div>
+
+      <!-- Fox Sports 503 -->
+      <div class="channel-card" id="card-fox" onclick="switchChannel('fox')">
+        <div class="check-badge">✓</div>
+        <div class="ch-fox">FOX<small>SPORTS 503</small></div>
       </div>
     </div>
 
-    <!-- TELEGRAM FOOTER CARD -->
-    <a href="https://t.me/iccprime" target="_blank" class="tg-card">
-      <div class="tg-info">
-        <h3>Telegram • @iccprime</h3>
-        <p>Tap to join for instant match links</p>
-      </div>
-      <div class="tg-join-pill">Join +</div>
+    <!-- TELEGRAM CTA -->
+    <a href="https://t.me/iccprime" target="_blank" class="tg-btn">
+      <svg viewBox="0 0 24 24">
+        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+      </svg>
+      Join Our Telegram
     </a>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      ICC Prime &nbsp;•&nbsp; Premium Cricket Experience
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
-    // Close Popup Function
-    function closeModal() {
+    function closePopup() {
       document.getElementById("tgModal").style.display = "none";
     }
 
-    // PASTE YOUR REAL .m3u8 LINKS BELOW
+    // CHANNEL STREAM LINKS
     const streams = {
-      "hindi": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "english": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "telugu": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "tamil": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "fox": "http://3colorwasabi.xyz:80/live/Mary1234/Mary1234/152322.m3u8",
+      "star": "http://3colorwasabi.xyz:80/live/Mary1234/Mary1234/152322.m3u8",
+      "sky": "http://3colorwasabi.xyz:80/live/Mary1234/Mary1234/152322.m3u8"
     };
 
-    const params = new URLSearchParams(window.location.search);
-    const streamId = (params.get("id") || "hindi").toLowerCase();
-    const streamUrl = streams[streamId] || streams["hindi"];
     const video = document.getElementById("player");
+    let hlsInstance = null;
+    let plyrInstance = new Plyr(video, {
+      controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen']
+    });
 
-    // Highlight active language button
-    const activeBtn = document.getElementById("btn-" + streamId);
-    if (activeBtn) activeBtn.classList.add("active");
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        const availableQualities = hls.levels.map((l) => l.height);
-        new Plyr(video, {
-          quality: {
-            default: availableQualities[0],
-            options: availableQualities,
-            forced: true,
-            onChange: (newQuality) => {
-              hls.levels.forEach((level, levelIndex) => {
-                if (level.height === newQuality) hls.currentLevel = levelIndex;
-              });
-            }
-          }
+    function loadStream(url) {
+      if (Hls.isSupported()) {
+        if (hlsInstance) {
+          hlsInstance.destroy();
+        }
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
+          video.play().catch(() => {});
         });
-      });
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = streamUrl;
-      new Plyr(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = url;
+        video.addEventListener("loadedmetadata", function () {
+          video.play().catch(() => {});
+        });
+      }
     }
+
+    function switchChannel(channelKey) {
+      const targetKey = streams[channelKey] ? channelKey : "fox";
+
+      // Update active card glow & checkmark
+      document.querySelectorAll(".channel-card").forEach(card => card.classList.remove("active"));
+      const activeCard = document.getElementById("card-" + targetKey);
+      if (activeCard) activeCard.classList.add("active");
+
+      // Update URL parameter without reloading page
+      const newUrl = window.location.pathname + "?id=" + targetKey;
+      window.history.replaceState({}, "", newUrl);
+
+      // Play selected stream
+      loadStream(streams[targetKey]);
+    }
+
+    // Load default channel from ?id= link (defaults to Fox 503)
+    const params = new URLSearchParams(window.location.search);
+    const initialChannel = (params.get("id") || "fox").toLowerCase();
+    switchChannel(initialChannel);
   </script>
 </body>
-                                  </html>
-  
+      </html>
+      
